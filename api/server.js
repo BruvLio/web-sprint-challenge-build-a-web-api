@@ -1,6 +1,7 @@
 const express = require("express");
 const server = express();
 const projectRouter = require("./projects/projects-router");
+const actionsRouter = require("./actions/actions-router");
 
 // Configure your server here
 // Build your actions router in /api/actions/actions-router.js
@@ -9,6 +10,7 @@ const projectRouter = require("./projects/projects-router");
 
 server.use(express.json());
 server.use("/api/projects", projectRouter);
+server.use("/api/actions", actionsRouter);
 
 server.get("/", (req, res) => {
   res.json("Server.Get for Projects connected");
