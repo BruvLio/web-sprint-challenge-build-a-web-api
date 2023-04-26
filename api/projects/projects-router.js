@@ -58,14 +58,15 @@ router.post("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, description, completed } = req.body;
-    if (!name || !description || !completed) {
-      res.status(400).json({
-        message: `Bad requst needs name and description`,
-      });
+    const { name, description } = req.body;
+    const bodyHasCompletedKey = Object.keys(req.body).includes("completed");
+    if (name && description && bodyHasCompletedKey) {
+      const updatedProject = await Projects.update(id, req.body);
+      res.status(201).json(updatedProject);
     } else {
-      const newProject = await Projects.update(id, req.body);
-      res.status(201).json(newProject);
+      res.status(400).json({
+        message: `Bad requst needs name, description and completed`,
+      });
     }
   } catch (err) {
     next(err);
