@@ -55,6 +55,23 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, description, completed } = req.body;
+    if (!name || !description || !completed) {
+      res.status(400).json({
+        message: `Bad requst needs name and description`,
+      });
+    } else {
+      const newProject = await Projects.update(id, req.body);
+      res.status(201).json(newProject);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
