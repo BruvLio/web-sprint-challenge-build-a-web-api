@@ -8,8 +8,9 @@ const projectRouter = require("./projects/projects-router");
 // Do NOT `server.listen()` inside this file!
 
 server.use(express.json());
+server.use("/api/projects", projectRouter);
 
-server.get("/api/projects", (req, res) => {
+server.get("/", (req, res) => {
   res.json("Server.Get for Projects connected");
 });
 
