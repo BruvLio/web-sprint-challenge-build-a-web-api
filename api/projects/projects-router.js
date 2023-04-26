@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const project = await Project.get();
-    res.status(200).json(project);
+    const projects = await Project.get();
+    res.status(200).json(projects);
   } catch (err) {
     next(err);
   }
@@ -29,6 +29,16 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/:id/actions", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const actions = await Project.getProjectActions(id);
+    res.status(200).json(actions);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post("/", async (req, res, next) => {
   try {
     const { name, description } = req.body;
@@ -39,6 +49,24 @@ router.post("/", async (req, res, next) => {
     } else {
       const newProject = await Project.insert(req.body);
       res.status(201).json(newProject);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const project = await Project.get(id);
+    if (!project) {
+      res.status(404).json({
+        message: `No project with provided ${id}`,
+      });
+    } else {
+      await Project.remove(id);
+      const projects = await Project.get();
+      res.status(200).json(projects);
     }
   } catch (err) {
     next(err);
