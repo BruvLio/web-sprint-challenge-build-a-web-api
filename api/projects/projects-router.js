@@ -5,8 +5,17 @@ const Project = require("./projects-model");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  console.log("made it to projects router");
+router.get("/", async (req, res, next) => {
+  try {
+    const project = await Project.get();
+    res.status(200).json(project);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/:id", (req, res) => {
+  console.log("GET BY ID");
 });
 
 module.exports = router;
