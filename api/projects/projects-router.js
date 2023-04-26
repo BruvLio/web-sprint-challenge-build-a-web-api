@@ -6,7 +6,7 @@ const Project = require("./projects-model");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  console.log("made it to router");
+  console.log("made it to projects router");
 });
 
 module.exports = router;
