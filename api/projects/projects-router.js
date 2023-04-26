@@ -1,5 +1,6 @@
 // Write your "projects" router here!
 const express = require("express");
+const { validateProjectid } = require("./projects-middleware");
 
 const Projects = require("./projects-model");
 
@@ -14,16 +15,9 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", validateProjectid, async (req, res, next) => {
   try {
-    const project = await Projects.get(req.params.id);
-    if (!project) {
-      res.status(404).json({
-        message: `No project with provided ${req.params.id}`,
-      });
-    } else {
-      res.status(200).json(project);
-    }
+    res.status(200).json(req.project);
   } catch (err) {
     next(err);
   }
@@ -73,19 +67,11 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", validateProjectid, async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const project = await Projects.get(id);
-    if (!project) {
-      res.status(404).json({
-        message: `No project with provided ${id}`,
-      });
-    } else {
-      await Projects.remove(id);
-      const projects = await Projects.get();
-      res.status(200).json(projects);
-    }
+    await Projects.remove(req.params.id);
+    const projects = await Projects.get();
+    res.status(200).json(projects);
   } catch (err) {
     next(err);
   }

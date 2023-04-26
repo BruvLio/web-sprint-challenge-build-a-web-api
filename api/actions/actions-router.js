@@ -1,6 +1,7 @@
 // Write your "actions" router here!
 
 const express = require("express");
+const { validateActionid } = require("./actions-middlware");
 
 const Actions = require("./actions-model");
 
@@ -64,19 +65,11 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", validateActionid, async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const action = await Actions.get(id);
-    if (!action) {
-      res.status(404).json({
-        message: `Bad request actions with ${id} doesn't exist`,
-      });
-    } else {
-      await Actions.remove(id);
-      const actions = await Actions.get();
-      res.status(200).json(actions);
-    }
+    await Actions.remove(req.params.id);
+    const actions = await Actions.get();
+    res.status(200).json(actions);
   } catch (err) {
     next(err);
   }
